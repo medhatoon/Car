@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Car</string>
+    <string name="details_edit_model">Model</string>
+    <string name="details_edit_color">Color</string>
+    <string name="details_edit_dpi">Density per letter</string>
+    <string name="details_edit_description">Description</string>
+</resources>
