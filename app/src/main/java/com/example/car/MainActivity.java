@@ -9,10 +9,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.car.databases.CarContract;
+import com.example.car.databinding.ActivityMainBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
@@ -22,24 +24,18 @@ public class MainActivity extends AppCompatActivity implements CarAdapter.OnItem
     public static int REQ_ITEM = 2;
     public static String KEY_ID = "id";
 
-
-    private Toolbar toolbar;
-    private RecyclerView recyclerView;
-    private FloatingActionButton fab;
     private CarAdapter adapter;
     private CarContract carContract;
+
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-        //inflateView
-        toolbar = findViewById(R.id.main_toolbar);
-        recyclerView = findViewById(R.id.main_recycler);
-        fab = findViewById(R.id.main_floating_action_button);
 
-        setSupportActionBar(toolbar);
+        setSupportActionBar(binding.mainToolbar);
 
         //get cars from databases
         carContract = CarContract.getInstance(this);
@@ -49,12 +45,12 @@ public class MainActivity extends AppCompatActivity implements CarAdapter.OnItem
 
         //inflate items into recycler
         adapter = new CarAdapter(this, allCars, this);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        binding.mainRecycler.setAdapter(adapter);
+        binding.mainRecycler.setHasFixedSize(true);
+        binding.mainRecycler.setLayoutManager(new GridLayoutManager(this, 2));
 
         //fab
-        fab.setOnClickListener(new View.OnClickListener() {
+        binding.mainFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
@@ -116,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements CarAdapter.OnItem
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if ( resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK) {
             carContract.openData();
             List<Car> allCars = carContract.getAllCars();
             carContract.closeData();

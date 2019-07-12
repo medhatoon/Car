@@ -2,17 +2,16 @@ package com.example.car;
 
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.car.databinding.ItemCarLayoutBinding;
 
 import java.util.List;
 
@@ -30,18 +29,18 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
     @NonNull
     @Override
     public CarViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_car_layout, parent, false);
-        return new CarViewHolder(view);
+        ItemCarLayoutBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_car_layout, parent, false);
+        return new CarViewHolder(binding);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CarViewHolder holder, int position) {
         Car car = cars.get(position);
         Glide.with(context).load(Uri.parse(car.getImage()))
-                .error(R.drawable.car_background).into(holder.imageView);
-        holder.textColor.setText(car.getColor());
-        holder.textModel.setText(car.getModel());
-        holder.textDpl.setText(String.valueOf(car.getDpl()));
+                .error(R.drawable.car_background).into(holder.binding.itemIv);
+        holder.binding.itemTvColor.setText(car.getColor());
+        holder.binding.itemTvModel.setText(car.getModel());
+        holder.binding.itemTvDbl.setText(String.valueOf(car.getDpl()));
     }
 
     @Override
@@ -55,16 +54,12 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
     }
 
     public class CarViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private ImageView imageView;
-        private TextView textColor, textModel, textDpl;
+        ItemCarLayoutBinding binding;
 
-        public CarViewHolder(@NonNull View view) {
-            super(view);
-            imageView = view.findViewById(R.id.item_iv);
-            textColor = view.findViewById(R.id.item_tv_color);
-            textDpl = view.findViewById(R.id.item_tv_dbl);
-            textModel = view.findViewById(R.id.item_tv_model);
-            view.setOnClickListener(this);
+        public CarViewHolder(@NonNull ItemCarLayoutBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+            binding.getRoot().setOnClickListener(this);
 
         }
 

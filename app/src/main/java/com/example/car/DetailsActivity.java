@@ -14,41 +14,33 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.databinding.DataBindingUtil;
 
 import com.bumptech.glide.Glide;
 import com.example.car.databases.CarContract;
+import com.example.car.databinding.ActivityDetailsBinding;
 import com.google.android.material.textfield.TextInputEditText;
 
 public class DetailsActivity extends AppCompatActivity {
 
     public static int REQ_PICK_IMAGE = 3;
 
-    private ImageView imageView;
-    private Toolbar toolbar;
-    private TextInputEditText et_Model, et_Color, et_Description, et_Dpl;
-
     private int id;
     private CarContract carContract;
     private Uri imageUri = Uri.parse("");
     private String image;
 
+    private ActivityDetailsBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_details);
-        //inflate views
-        toolbar = findViewById(R.id.toolbar);
-        imageView = findViewById(R.id.image_view);
-        et_Color = findViewById(R.id.details_edit_color);
-        et_Description = findViewById(R.id.details_edit_description);
-        et_Dpl = findViewById(R.id.details_edit_dpi);
-        et_Model = findViewById(R.id.details_edit_model);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_details);
 
-
-        setSupportActionBar(toolbar);
+        setSupportActionBar(binding.toolbar);
         carContract = CarContract.getInstance(this);
 
-        imageView.setOnClickListener(new View.OnClickListener() {
+        binding.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_PICK,
@@ -73,11 +65,11 @@ public class DetailsActivity extends AppCompatActivity {
         if (car != null) {
             image = car.getImage();
             Glide.with(this).load(Uri.parse(image))
-                    .error(R.drawable.car_background).into(imageView);
-            et_Color.setText(car.getColor());
-            et_Description.setText(car.getDescription());
-            et_Model.setText(car.getModel());
-            et_Dpl.setText(String.valueOf(car.getDpl()));
+                    .error(R.drawable.car_background).into(binding.imageView);
+            binding.detailsEditColor.setText(car.getColor());
+            binding.detailsEditDescription.setText(car.getDescription());
+            binding.detailsEditModel.setText(car.getModel());
+            binding.detailsEditDpi.setText(String.valueOf(car.getDpl()));
         }
     }
 
@@ -113,10 +105,10 @@ public class DetailsActivity extends AppCompatActivity {
 
     private void checkItem() {
 
-        String model = et_Model.getText().toString().trim();
-        String color = et_Color.getText().toString().trim();
-        String description = et_Description.getText().toString().trim();
-        String dpl = et_Dpl.getText().toString().trim();
+        String model = binding.detailsEditModel.getText().toString().trim();
+        String color = binding.detailsEditColor.getText().toString().trim();
+        String description = binding.detailsEditDescription.getText().toString().trim();
+        String dpl = binding.detailsEditDpi.getText().toString().trim();
         if (!model.isEmpty() && !color.isEmpty() && !description.isEmpty()
                 && !dpl.isEmpty()) {
             Car car = new Car(model, color, imageUri.toString(), description, Double.valueOf(dpl));
@@ -156,7 +148,7 @@ public class DetailsActivity extends AppCompatActivity {
             imageUri = data.getData();
 
             Glide.with(DetailsActivity.this).load(imageUri)
-                    .error(R.drawable.car_background).into(imageView);
+                    .error(R.drawable.car_background).into(binding.imageView);
 
         }
     }
